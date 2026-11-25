@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<netguard>
+  <application>
+    <setting key="subnet" type="boolean" value="false" />
+    <setting key="reload_onconnectivity" type="boolean" value="true" />
+    <setting key="disable_on_call" type="boolean" value="false" />
+    <setting key="dns2" type="string" value="1.1.1.1" />
+    <setting key="filter_udp" type="boolean" value="true" />
+    <setting key="dark_theme" type="boolean" value="true" />
+    <setting key="whitelist_roaming" type="boolean" value="true" />
+    <setting key="lockdown_other" type="boolean" value="true" />
+    <setting key="lan" type="boolean" value="false" />
+    <setting key="national_roaming" type="boolean" value="false" />
+    <setting key="pcap_file_size" type="string" value="2" />
+    <setting key="whitelist_other" type="boolean" value="false" />
+    <setting key="hint_fairemail" type="boolean" value="false" />
+    <setting key="unmetered_4g" type="boolean" value="false" />
+    <setting key="hint_push" type="boolean" value="false" />
+    <setting key="dns" type="string" value="9.9.9.9" />
+    <setting key="socks5_username" type="string" value="16" />
+    <setting key="pcap_record_size" type="string" value="32" />
+    <setting key="version" type="integer" value="2026080101" />
+    <setting key="wifi_homes" type="set" value="" />
+    <setting key="hosts_url" type="string" value="https://www.netguard.me/hosts" />
+    <setting key="install" type="boolean" value="false" />
+    <setting key="use_metered" type="boolean" value="false" />
+    <setting key="nodoze" type="boolean" value="true" />
+    <setting key="stats_frequency" type="string" value="1000" />
+    <setting key="lockdown_wifi" type="boolean" value="true" />
+    <setting key="eu_roaming" type="boolean" value="false" />
+    <setting key="show_top" type="boolean" value="false" />
+    <setting key="notify_access" type="boolean" value="true" />
+    <setting key="socks5_addr" type="string" value="127.0.0.1" />
+    <setting key="log" type="boolean" value="false" />
+    <setting key="log_app" type="boolean" value="true" />
+    <setting key="show_stats" type="boolean" value="true" />
+    <setting key="show_system" type="boolean" value="true" />
+    <setting key="enabled" type="boolean" value="true" />
+    <setting key="socks5_port" type="string" value="1080" />
+    <setting key="socks5_password" type="string" value="3" />
+    <setting key="manage_system" type="boolean" value="true" />
+    <setting key="pcap" type="boolean" value="true" />
+    <setting key="hint_usage" type="boolean" value="false" />
+    <setting key="stats_samples" type="string" value="90" />
+    <setting key="screen_other" type="boolean" value="false" />
+    <setting key="initialized" type="boolean" value="true" />
+    <setting key="theme" type="string" value="teal" />
+    <setting key="whitelist_wifi" type="boolean" value="false" />
+    <setting key="unmetered_2g" type="boolean" value="false" />
+    <setting key="use_hosts" type="boolean" value="true" />
+    <setting key="handover" type="boolean" value="false" />
+    <setting key="hint_system" type="boolean" value="false" />
+    <setting key="screen_on" type="boolean" value="true" />
+    <setting key="update_check" type="boolean" value="true" />
+    <setting key="socks5_enabled" type="boolean" value="true" />
+    <setting key="debug_iab" type="boolean" value="false" />
+    <setting key="ttl" type="string" value="259" />
+    <setting key="ip6" type="boolean" value="true" />
+    <setting key="filter" type="boolean" value="true" />
+    <setting key="auto_enable" type="string" value="1" />
+    <setting key="screen_delay" type="string" value="1" />
+    <setting key="watchdog" type="string" value="55" />
+    <setting key="hint_whitelist" type="boolean" value="false" />
+    <setting key="loglevel" type="string" value="6" />
+    <setting key="screen_wifi" type="boolean" value="false" />
+    <setting key="tethering" type="boolean" value="false" />
+    <setting key="track_usage" type="boolean" value="true" />
+    <setting key="unmetered_3g" type="boolean" value="false" />
+  </application>
+  <wifi />
+  <mobile />
+  <screen_wifi />
+  <screen_other>
+    <setting key="com.google.android.apps.searchlite" type="boolean" value="true" />
+  </screen_other>
+  <roaming>
+    <setting key="com.google.android.apps.searchlite" type="boolean" value="false" />
+    <setting key="com.uptodown.installes" type="boolean" value="false" />
+  </roaming>
+  <lockdown />
+  <apply />
+  <notify />
+  <filter />
+  <forward />
+</netguard>
