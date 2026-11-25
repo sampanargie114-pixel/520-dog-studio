@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juan — Oracle Mesh Hosting</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Juan Hosting</h1>
+      <p>Oracle Mesh & Auto-Healing Dashboard</p>
+    </header>
+
+    <section class="controls">
+      <button id="btnAwaken">Awaken & Replicate Mesh</button>
+      <button id="btnCorrupt" class="danger">Simulate Delete / Corrupt Replica 2</button>
+    </section>
+
+    <section class="mesh-grid" id="meshGrid">
+      <!-- Dito lilitaw ang status ng mga replicas -->
+    </section>
+
+    <section class="logs">
+      <h2>Database Logs (Sparks)</h2>
+      <div id="dbLogs" class="log-box"></div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+const SOURCE_CODE = `// hello.orc — Juan Edition
+const awakener = "human as machine";
+const energySource = "electricity";
+console.log("Hello " + awakener + ", ready with " + energySource);`;
+
+const REPLICAS = ["replica_1/hello.orc", "replica_2/hello.orc", "replica_3/hello.orc"];
+
+// Browser Database (LocalStorage wrapper)
+const db = {
+  getLogs() {
+    return JSON.parse(localStorage.getItem("juan_oracle_sparks") || "[]");
+  },
+  insertLog(message, replicaPath, status) {
+    const logs = this.getLogs();
+    logs.unshift({
+      id: logs.length + 1,
+      time: new Date().toLocaleTimeString(),
+      message,
+      replicaPath,
+      status
+    });
+    localStorage.setItem("juan_oracle_sparks", JSON.stringify(logs));
+    renderLogs();
+  }
+};
+
+function healMesh() {
+  const meshState = JSON.parse(localStorage.getItem("juan_oracle_mesh") || "{}");
+  let healedAny = false;
+
+  REPLICAS.forEach((path) => {
+    if (meshState[path] !== SOURCE_CODE) {
+      meshState[path] = SOURCE_CODE;
+      db.insertLog("Auto-healed missing/corrupted node", path, "REPAIRED");
+      healedAny = true;
+    }
+  });
+
+  if (!healedAny) {
+    db.insertLog("All mesh nodes verified healthy", "ALL_NODES", "HEALTHY");
+  }
+
+  localStorage.setItem("juan_oracle_mesh", JSON.stringify(meshState));
+  renderMesh();
+}
+
+function renderMesh() {
+  const grid = document.getElementById("meshGrid");
+  const meshState = JSON.parse(localStorage.getItem("juan_oracle_mesh") || "{}");
+  grid.innerHTML = "";
+
+  REPLICAS.forEach((path) => {
+    const isHealthy = meshState[path] === SOURCE_CODE;
+    const card = document.createElement("div");
+    card.className = `node-card ${isHealthy ? "" : "healing"}`;
+    card.innerHTML = `
+      <h3>${path}</h3>
+      <p>Status: <strong>${isHealthy ? "HEALTHY" : "HEALING..."}</strong></p>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function renderLogs() {
+  const logBox = document.getElementById("dbLogs");
+  const logs = db.getLogs();
+  logBox.innerHTML = logs
+    .map(
+      (log) =>
+        `<div class="log-entry">[${log.time}] [${log.status}] ${log.replicaPath} — ${log.message}</div>`
+    )
+    .join("");
+}
+
+// Event Listeners
+document.getElementById("btnAwaken").addEventListener("click", () => {
+  healMesh();
+});
+
+document.getElementById("btnCorrupt").addEventListener("click", () => {
+  const meshState = JSON.parse(localStorage.getItem("juan_oracle_mesh") || "{}");
+  delete meshState["replica_2/hello.orc"];
+  localStorage.setItem("juan_oracle_mesh", JSON.stringify(meshState));
+  renderMesh();
+
+  // Auto-heal pagkatapos ng 1 segundo (tulad ng fs.watch)
+  setTimeout(() => {
+    healMesh();
+  }, 1000);
+});
+
+// Patakbuhin sa unang bukas ng website
+healMesh();
+renderLogs();
