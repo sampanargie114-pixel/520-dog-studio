@@ -1,0 +1,16 @@
+{
+  "appName": "Nova Mobile",
+  "version": "2.4.0",
+  "theme": "midnight",
+  "currency": "USD",
+  "features": {
+    "livePreview": true,
+    "instantSync": true,
+    "offlineSupport": true
+  },
+  "user": {
+    "name": "Alex Dev",
+    "handle": "@alexcode",
+    "tier": "Pro Member"
+  }
+}
