@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuestHub - Study & Habit Tracker</title>
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #8b5cf6;
+      --accent-hover: #7c3aed;
+      --success: #10b981;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+    }
+
+    /* Player Profile & XP Bar */
+    .profile-card {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #334155;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .level-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      background: var(--accent);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .xp-bar-bg {
+      background: #0f172a;
+      height: 12px;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .xp-bar-fill {
+      background: linear-gradient(90deg, #8b5cf6, #ec4899);
+      height: 100%;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    /* Pomodoro Focus Timer */
+    .timer-card {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      text-align: center;
+      border: 1px solid #334155;
+    }
+
+    .timer-display {
+      font-size: 3rem;
+      font-weight: bold;
+      margin: 10px 0;
+      color: #38bdf8;
+    }
+
+    .btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: #334155;
+    }
+
+    .btn-secondary:hover {
+      background: #475569;
+    }
+
+    /* Quest List */
+    .quest-card {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #334155;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: white;
+    }
+
+    .quest-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0f172a;
+      padding: 12px 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      border-left: 4px solid var(--accent);
+    }
+
+    .quest-item.completed {
+      border-left-color: var(--success);
+      opacity: 0.6;
+      text-decoration: line-through;
+    }
+
+    .xp-tag {
+      font-size: 0.8rem;
+      color: #fbbf24;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Player Stats -->
+    <div class="profile-card">
+      <div class="level-header">
+        <h2>⚔️ QuestHub Player</h2>
+        <span class="badge" id="levelBadge">Level 1</span>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">
+        XP: <span id="currentXP">0</span> / <span id="maxXP">100</span>
+      </p>
+      <div class="xp-bar-bg">
+        <div class="xp-bar-fill" id="xpBar"></div>
+      </div>
+    </div>
+
+    <!-- Focus Timer -->
+    <div class="timer-card">
+      <h3>⏳ Focus Timer (Pomodoro)</h3>
+      <div class="timer-display" id="timerDisplay">25:00</div>
+      <div style="display: flex; gap: 10px; justify-content: center;">
+        <button class="btn" onclick="startTimer()">Simulan</button>
+        <button class="btn btn-secondary" onclick="pauseTimer()">I-pause</button>
+        <button class="btn btn-secondary" onclick="resetTimer()">I-reset</button>
+      </div>
+    </div>
+
+    <!-- Daily Quests -->
+    <div class="quest-card">
+      <h3>📜 Daily Quests & Habits</h3>
+      <div class="input-group">
+        <input type="text" id="questInput" placeholder="Magdagdag ng bagong quest (hal. Mag-review sa Math)...">
+        <button class="btn" onclick="addQuest()">+ Idagdag</button>
+      </div>
+      <div id="questList"></div>
+    </div>
+  </div>
+
+  <script>
+    // Player State
+    let xp = 0;
+    let level = 1;
+    let maxXP = 100;
+
+    // Timer State
+    let timeLeft = 25 * 60;
+    let timerInterval = null;
+
+    // Initial Sample Quests
+    let quests = [
+      { id: 1, text: "Tapusin ang homework ngayong araw", xp: 30, completed: false },
+      { id: 2, text: "Uminom ng 8 basong tubig", xp: 20, completed: false },
+      { id: 3, text: "Magbasa ng libro nang 15 minuto", xp: 25, completed: false }
+    ];
+
+    // XP & Level System
+    function gainXP(amount) {
+      xp += amount;
+      while (xp >= maxXP) {
+        xp -= maxXP;
+        level++;
+        maxXP = Math.floor(maxXP * 1.2);
+        alert(`🎉 LEVEL UP! Ikaw ay nasa Level ${level} na!`);
+      }
+      updateUI();
+    }
+
+    function updateUI() {
+      document.getElementById("levelBadge").innerText = `Level ${level}`;
+      document.getElementById("currentXP").innerText = xp;
+      document.getElementById("maxXP").innerText = maxXP;
+      const percentage = (xp / maxXP) * 100;
+      document.getElementById("xpBar").style.width = `${percentage}%`;
+    }
+
+    // Quest Functions
+    function renderQuests() {
+      const list = document.getElementById("questList");
+      list.innerHTML = "";
+      quests.forEach(q => {
+        const div = document.createElement("div");
+        div.className = `quest-item ${q.completed ? "completed" : ""}`;
+        div.innerHTML = `
+          <span>${q.text}</span>
+          <div>
+            <span class="xp-tag">+${q.xp} XP</span>
+            ${!q.completed ? `<button class="btn" style="padding: 5px 10px; font-size: 0.8rem;" onclick="completeQuest(${q.id})">Tapos na</button>` : "✅"}
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function addQuest() {
+      const input = document.getElementById("questInput");
+      const text = input.value.trim();
+      if (!text) return;
+
+      quests.push({
+        id: Date.now(),
+        text: text,
+        xp: 25,
+        completed: false
+      });
+      input.value = "";
+      renderQuests();
+    }
+
+    function completeQuest(id) {
+      const quest = quests.find(q => q.id === id);
+      if (quest && !quest.completed) {
+        quest.completed = true;
+        gainXP(quest.xp);
+        renderQuests();
+      }
+    }
+
+    // Timer Functions
+    function updateTimerDisplay() {
+      const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+      const seconds = (timeLeft % 60).toString().padStart(2, '0');
+      document.getElementById("timerDisplay").innerText = `${minutes}:${seconds}`;
+    }
+
+    function startTimer() {
+      if (timerInterval) return;
+      timerInterval = setInterval(() => {
+        if (timeLeft > 0) {
+          timeLeft--;
+          updateTimerDisplay();
+        } else {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          alert("⏰ Tapos na ang Focus Session! Nakakuha ka ng +50 XP!");
+          gainXP(50);
+          resetTimer();
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      timeLeft = 25 * 60;
+      updateTimerDisplay();
+    }
+
+    // Initialize App
+    renderQuests();
+    updateUI();
+  </script>
+</body>
+</html>
